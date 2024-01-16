@@ -31,9 +31,16 @@ void Game::spawnEnemy()
 		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
 		0.f
 	);
-	this->enemy.setFillColor(sf::Color::Green);
+	int randomValue = rand() % 100;
+	if (randomValue < 90) {
+		this->enemy.setFillColor(sf::Color::Blue);
+	}
+	else if (randomValue < 95)
+		this->enemy.setFillColor(sf::Color::Yellow);
+	else {
+		this->enemy.setFillColor(sf::Color::Red);
+	}
 	this->enemies.push_back(this->enemy);
-	// rmove enemy at end
 }
 
 void Game::updateEvents()
@@ -75,30 +82,43 @@ void Game::updateEnemies()
 	// move enemies
 	for (int i = 0; i < this->enemies.size(); i++) {
 		this->enemies[i].move(0.f, speed);
-		// if below screen, delete and change points
-		if (this->enemies[i].getPosition().y > this->window->getSize().y)
-			this->enemies.erase(this->enemies.begin() + i);
-	}
-	// if click
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-		if (this->mouseHeld == false) {
-			this->mouseHeld = true;
-			bool deleted = false;
-			for (size_t i = 0; i < this->enemies.size() && deleted == false; i++) {
-				// if click on enemy
-				if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) {
-					// delete enemy
-					deleted = true;
-					this->enemies.erase(this->enemies.begin() + i);
-					// increase points
-					speed += 0.5;
-					health -= 10;
-					this->points += 1;
-				}
+		bool deleted = false;
+		for (size_t i = 0; i < this->enemies.size() && deleted == false; i++) {
+			// if click on enemy
+			if (this->enemies[i].getGlobalBounds().contains(this->mousePosView) && this->enemies[i].getFillColor() == sf::Color::Blue) {
+				// delete enemy
+				deleted = true;
+				// increase points
+				this->points += 10;
+				speed += 0.005;
 			}
+			if (this->enemies[i].getGlobalBounds().contains(this->mousePosView) && this->enemies[i].getFillColor() == sf::Color::Yellow) {
+				// delete enemy
+				deleted = true;
+				// increase points
+				this->points -= 50;
+				this->health -= 10;
+				speed += 0.5;
+			}
+			if (this->enemies[i].getGlobalBounds().contains(this->mousePosView) && this->enemies[i].getFillColor() == sf::Color::Red) {
+				// delete enemy
+				deleted = true;
+				// increase points
+				this->health += 10;
+				this->points += 50;
+			}
+			// if below screen, delete and change points
+			if (this->enemies[i].getPosition().y > this->window->getSize().y && this->enemies[i].getFillColor() != sf::Color::Yellow) {
+				deleted = true;
+				speed += 0.5;
+				health -= 10;
+			}
+			if (this->enemies[i].getPosition().y > this->window->getSize().y && this->enemies[i].getFillColor() == sf::Color::Yellow) {
+				deleted = true;
+			}
+			if (deleted)
+				this->enemies.erase(this->enemies.begin() + i);
 		}
-		else
-			this->mouseHeld = false;
 	}
 }
 
@@ -158,7 +178,4 @@ void Game::initEnemies()
 	this->enemy.setPosition(10.f, 10.f);
 	this->enemy.setSize(sf::Vector2f(100.f, 100.f));
 	this->enemy.setScale(sf::Vector2f(0.5f, 0.5f));
-	this->enemy.setFillColor(sf::Color::Cyan);
-	this->enemy.setOutlineColor(sf::Color::Green);
-	this->enemy.setOutlineThickness(1.f);
 }
