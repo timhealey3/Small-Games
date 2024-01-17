@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
+#include <sstream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -23,6 +24,8 @@ public:
 	void updateMousePostions();
 	void updateEnemies();
 	void update();
+	void updateText();
+	void renderText();
 	void renderEnemies();
 	void render();
 private:
@@ -32,6 +35,9 @@ private:
 	// mouse positions
 	sf::Vector2i mousePosWindow;
 	sf::Vector2f mousePosView;
+	// resources
+	sf::Font font;
+	sf::Text uiText;
 	// game logic
 	bool endGame;
 	unsigned points;
@@ -46,6 +52,8 @@ private:
 	sf::RectangleShape enemy;
 	// func
 	void initVariables();
+	void initFonts();
+	void initText();
 	void initWindows();
 	void initEnemies();
 };

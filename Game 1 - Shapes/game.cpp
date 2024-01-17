@@ -5,6 +5,8 @@ Game::Game()
 {
 	this->initVariables();
 	this->initWindows();
+	this->initFonts();
+	this->initText();
 	this->initEnemies();
 }
 
@@ -90,7 +92,7 @@ void Game::updateEnemies()
 				deleted = true;
 				// increase points
 				this->points += 10;
-				speed += 0.005;
+				speed += 0.01;
 			}
 			if (this->enemies[i].getGlobalBounds().contains(this->mousePosView) && this->enemies[i].getFillColor() == sf::Color::Yellow) {
 				// delete enemy
@@ -129,12 +131,25 @@ void Game::update()
 	// if endgame false, play game
 	if (!this->endGame) {
 		this->updateMousePostions();
+		this->updateText();
 		this->updateEnemies();
 	}
 	// endgame condition
 	if (this->health <= 0) {
 		this->endGame = true;
 	}
+}
+
+void Game::updateText()
+{
+	std::stringstream ss;
+	ss << "Points: " << this->points << "\n" << "Health: " << this->health;
+	this->uiText.setString(ss.str());
+}
+
+void Game::renderText()
+{
+	this->window->draw(uiText);
 }
 
 void Game::renderEnemies()
@@ -148,7 +163,7 @@ void Game::render()
 {
 	this->window->clear(sf::Color::Black);
 	this->renderEnemies();
-
+	this->renderText();
 	this->window->display();
 }
 // private functions
@@ -163,6 +178,22 @@ void Game::initVariables()
 	this->enemySpawnTimerMax = 10.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 5;
+}
+
+void Game::initFonts()
+{
+	if (this->font.loadFromFile("VCR_OSD_MONO_1.001.ttf"))
+	{
+		std::cout << "ERROR: initFonts Failed to load font";
+	}
+}
+
+void Game::initText()
+{
+	this->uiText.setFont(this->font);
+	this->uiText.setCharacterSize(24);
+	this->uiText.setFillColor(sf::Color::White);
+	this->uiText.setString("NONE");
 }
 
 void Game::initWindows()
