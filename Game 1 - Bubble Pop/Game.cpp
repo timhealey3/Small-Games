@@ -98,16 +98,25 @@ void Game::updateEnemies()
 				// delete enemy
 				deleted = true;
 				// increase points
-				this->points -= 50;
+				if (this->points - 50 < pointMin) {
+					this->points = pointMin;
+				}
+				else {
+					this->points -= 50;
+				}
 				this->health -= 10;
-				speed += 0.5;
+				speed += .75;
 			}
 			if (this->enemies[i].getGlobalBounds().contains(this->mousePosView) && this->enemies[i].getFillColor() == sf::Color::Red) {
 				// delete enemy
 				deleted = true;
 				// increase points
-				this->health += 10;
-				this->points += 50;
+				if (this->health + 10 > pointMax) {
+					this->health = pointMax;
+				}
+				else {
+					this->health += 10;
+				}
 			}
 			// if below screen, delete and change points
 			if (this->enemies[i].getPosition().y > this->window->getSize().y && this->enemies[i].getFillColor() != sf::Color::Yellow) {
@@ -178,6 +187,8 @@ void Game::initVariables()
 	this->enemySpawnTimerMax = 10.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 5;
+	this->pointMin = 0;
+	this->pointMax = 100;
 }
 
 void Game::initFonts()
@@ -209,4 +220,5 @@ void Game::initEnemies()
 	this->enemy.setPosition(10.f, 10.f);
 	this->enemy.setSize(sf::Vector2f(100.f, 100.f));
 	this->enemy.setScale(sf::Vector2f(0.5f, 0.5f));
+
 }

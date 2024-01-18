@@ -39,8 +39,10 @@ private:
 	sf::Font font;
 	sf::Text uiText;
 	// game logic
+	int pointMax;
+	int pointMin;
 	bool endGame;
-	unsigned points;
+	int points;
 	int health;
 	float speed;
 	float enemySpawnTimer;
