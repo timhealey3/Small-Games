@@ -1,0 +1,6 @@
+﻿  main.cpp
+  Generating code
+  Compiler switch has changed, fall back to full compilation.
+  All 4 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  whatever.vcxproj -> C:\Users\avhea\source\repos\whatever\x64\Release\whatever.exe
