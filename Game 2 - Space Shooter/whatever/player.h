@@ -18,6 +18,7 @@ private:
 public:
 	Player();
 	virtual ~Player();
+	const sf::FloatRect getBounds() const;
 	const sf::Vector2f& getPos() const;
 	void move(const float dirX, const float dirY);
 	const bool canAttack();

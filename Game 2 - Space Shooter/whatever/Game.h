@@ -5,6 +5,7 @@
 #include <ctime>
 #include "player.h"
 #include "bullet.h"
+#include "enemy.h"
 // Game engine class (wrapper class)
 
 class Game {
@@ -13,9 +14,16 @@ private:
 	std::map<std::string, sf::Texture*> textures;
 	std::vector<Bullet*> bullets;
 	Player* player;
+	float spawnTimer;
+	float spawnTimerMax;
+	std::vector<Enemy*> enemies;
+	sf::Font font;
+	sf::Text pointText;
 	void initWindow();
 	void initTextures();
+	void initGui();
 	void initPlayer();
+	void initEnemies();
 public:
 	Game();
 	virtual ~Game();
@@ -23,7 +31,10 @@ public:
 	void updatePollEvents();
 	void updateInput();
 	void updateAttack();
+	void updateEnemies();
+	void updateGUI();
 	void update();
+	void renderGUI();
 	void render();
 };
 

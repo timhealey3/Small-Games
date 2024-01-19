@@ -14,16 +14,38 @@ void Game::initTextures()
 	this->textures["BULLET"]->loadFromFile("Textures/laser.png");
 }
 
+void Game::initGui()
+{
+	// Load font
+	if (!this->font.loadFromFile("Font/scfont.ttf"))
+		std::cout << "ERROR::GAME::FAILED LOAD FONT" << "\n";
+	this->pointText.setFont(this->font);
+	this->pointText.setCharacterSize(24);
+	this->pointText.setFillColor(sf::Color::White);
+	this->pointText.setString("StarCraft Space Shooter");
+	this->pointText.setString("Points: 0");
+	this->pointText.setString("Health: 0");
+	// init point text
+}
+
 void Game::initPlayer()
 {
 	this->player = new Player();
+}
+
+void Game::initEnemies()
+{
+	this->spawnTimerMax = 15.f;
+	this->spawnTimer = this->spawnTimerMax;
 }
 
 Game::Game()
 {
 	this->initWindow();
 	this->initTextures();
+	this->initGui();
 	this->initPlayer();
+	this->initEnemies();
 }
 
 Game::~Game()
@@ -37,6 +59,10 @@ Game::~Game()
 	// delete all bullets
 	for (auto* i : this->bullets) {
 		delete i;
+	}
+	// delete enemies
+	for (auto* j : this->enemies) {
+		delete j;
 	}
 }
 
@@ -70,8 +96,11 @@ void Game::updateInput()
 		this->player->move(0.f, -1.f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		this->player->move(0.f, 1.f);
+	// shoot
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack()) {
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y, 0.f, -1.f, 5.f));
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], 
+			this->player->getPos().x + this->player->getBounds().width/2.f, 
+			this->player->getPos().y, 0.f, -1.f, 5.f));
 	}
 
 }
@@ -93,12 +122,51 @@ void Game::updateAttack()
 	}
 }
 
+void Game::updateEnemies()
+{
+	this->spawnTimer += 0.5f;
+	if (this->spawnTimer >= this->spawnTimerMax) {
+		this->enemies.push_back(new Enemy(rand() % this->window->getSize().x - 40.f, -100.f));
+		this->spawnTimer = 0.f;
+	}
+	for (int i = 0; i < this->enemies.size(); i++) {
+		bool enemy_removed = false;
+		this->enemies[i]->update();
+		// remove if off screen 
+		for (size_t k = 0; k < this->bullets.size() && !enemy_removed; k++) {
+			if (this->bullets[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
+				this->bullets.erase(this->bullets.begin() + k);
+				this->enemies.erase(this->enemies.begin() + i);
+				enemy_removed = true;
+			}
+		}
+		if (!enemy_removed) {
+			if (this->enemies[i]->getBounds().top > this->window->getSize().y) {
+				this->enemies.erase(this->enemies.begin() + i);
+				enemy_removed = true;
+			}
+		}
+	}
+
+}
+
+void Game::updateGUI()
+{
+}
+
 void Game::update()
 {
 	this->updatePollEvents();
 	this->updateInput();
 	this->player->update();
 	this->updateAttack();
+	this->updateEnemies();
+	this->updateGUI();
+}
+
+void Game::renderGUI()
+{
+	this->window->draw(this->pointText);
 }
 
 void Game::render()
@@ -106,8 +174,12 @@ void Game::render()
 	this->window->clear();
 	// draw stuff
 	this->player->render(*this->window);
-	for (auto* i : this->bullets) {
+	for (auto *i : this->bullets) {
 		i->render(this->window);
 	}
+	for (auto* enemy : this->enemies) {
+		enemy->render(this->window);
+	}
+	this->renderGUI();
 	this->window->display();
 }
