@@ -19,9 +19,14 @@ private:
 	std::vector<Enemy*> enemies;
 	sf::Font font;
 	sf::Text pointText;
+	//background
+	sf::Texture worldBackgroundTex;
+	sf::Sprite worldBackground;
+
 	void initWindow();
 	void initTextures();
 	void initGui();
+	void initWorld();
 	void initPlayer();
 	void initEnemies();
 public:
@@ -33,6 +38,9 @@ public:
 	void updateAttack();
 	void updateEnemies();
 	void updateGUI();
+	void updateCollision();
+	void updateWorld();
+	void renderWorld();
 	void update();
 	void renderGUI();
 	void render();

@@ -23,7 +23,7 @@ void Enemy::initVariables()
 	this->hp = 0;
 	this->damage = 1;
 	this->points = 5;
-	this->speed = 2.5f;
+	this->speed = 2.f;
 }
 
 Enemy::Enemy(float posX, float posY)
