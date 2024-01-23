@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <map>
+#include <string>
+#include <sstream>
 #include <vector>
 #include <ctime>
 #include "player.h"
@@ -14,11 +16,15 @@ private:
 	std::map<std::string, sf::Texture*> textures;
 	std::vector<Bullet*> bullets;
 	Player* player;
+	sf::RectangleShape playerHpBar;
+	sf::RectangleShape playerHpBarBack;
 	float spawnTimer;
 	float spawnTimerMax;
 	std::vector<Enemy*> enemies;
 	sf::Font font;
 	sf::Text pointText;
+	sf::Text gameOverText;
+	unsigned points;
 	//background
 	sf::Texture worldBackgroundTex;
 	sf::Sprite worldBackground;
@@ -27,6 +33,7 @@ private:
 	void initTextures();
 	void initGui();
 	void initWorld();
+	void initVariables();
 	void initPlayer();
 	void initEnemies();
 public:

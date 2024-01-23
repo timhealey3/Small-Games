@@ -18,12 +18,14 @@ void Enemy::initShape()
 
 void Enemy::initVariables()
 {
+	this->pointCount = rand() % 3 + 1; // 3 to 10
+	// rand number to set texture?
 	this->type = 0;
-	this->hpMax = 10;
-	this->hp = 0;
-	this->damage = 1;
-	this->points = 5;
-	this->speed = 2.f;
+	this->hpMax = static_cast<int>(this->pointCount);
+	this->hp = this->hpMax;
+	this->damage = this->pointCount + 7;
+	this->points = this->pointCount;
+	this->speed = static_cast<float>(this->pointCount);
 }
 
 Enemy::Enemy(float posX, float posY)
@@ -47,6 +49,16 @@ void Enemy::update()
 
 const sf::FloatRect Enemy::getBounds() const {
 	return this->shape.getGlobalBounds();
+}
+
+const int& Enemy::getPoints() const
+{
+	return this->points;
+}
+
+const int& Enemy::getDamage() const
+{
+	return this->damage;
 }
 
 void Enemy::render(sf::RenderTarget* target)
